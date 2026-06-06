@@ -6,6 +6,7 @@
 #include <sqlite3.h>
 
 #define DB_PATH "/tmp/crash_monitor.db"
+#define LOG_PATH "/tmp/crash_debug.log"
 
 void init_database() {
     sqlite3 *db;
@@ -34,6 +35,15 @@ void init_database() {
 }
 
 int main(int argc, char *argv[]) {
+    FILE *log = fopen(LOG_PATH, "a");
+    if (log) {
+        fprintf(log, "Daemon triggered! Args count: %d\n", argc);
+        for (int i = 0; i < argc; i++) {
+            fprintf(log, "  arg[%d]: %s\n", i, argv[i]);
+        }
+        fclose(log);
+    }
+
     if (argc < 5) {
         return 1;
     }
