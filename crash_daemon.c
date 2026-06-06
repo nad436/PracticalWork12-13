@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <sqlite3.h>
 
-#define DB_PATH "/var/log/crash_monitor.db"
+#define DB_PATH "/tmp/crash_monitor.db"
 
 void init_database() {
     sqlite3 *db;
@@ -13,7 +13,6 @@ void init_database() {
     
     int rc = sqlite3_open(DB_PATH, &db);
     if (rc != SQLITE_OK) {
-        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
         sqlite3_close(db);
         exit(1);
     }
@@ -28,7 +27,6 @@ void init_database() {
                 
     rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
     if (rc != SQLITE_OK) {
-        fprintf(stderr, "SQL error: %s\n", err_msg);
         sqlite3_free(err_msg);
     }
     
@@ -37,7 +35,6 @@ void init_database() {
 
 int main(int argc, char *argv[]) {
     if (argc < 5) {
-        fprintf(stderr, "Usage: %s <PID> <UID> <SIGNAL> <EXE_NAME>\n", argv[0]);
         return 1;
     }
 
